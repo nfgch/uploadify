@@ -3,63 +3,63 @@ UploadiFive 1.2.3
 Copyright (c) 2012 Reactive Apps, Ronnie Garcia
 Released under the MIT License
 */
-;(function($) {
+; (function ($) {
 
     var methods = {
 
-        init : function(options) {
-            
-            return this.each(function() {
+        init: function (options) {
+
+            return this.each(function () {
 
                 // Create a reference to the jQuery DOM object
                 var $this = $(this);
-                    $this.data('uploadifive', {
-                        inputs     : {}, // The object that contains all the file inputs
-                        inputCount : 0,  // The total number of file inputs created
-                        fileID     : 0,
-                        queue      : {
-                             count      : 0, // Total number of files in the queue
-                             selected   : 0, // Number of files selected in the last select operation
-                             replaced   : 0, // Number of files replaced in the last select operation
-                             errors     : 0, // Number of files that returned an error in the last select operation
-                             queued     : 0, // Number of files added to the queue in the last select operation
-                             cancelled  : 0  // Total number of files that have been cancelled or removed from the queue
-                                     },
-                        uploads    : {
-                                         current    : 0, // Number of files currently being uploaded
-                                         attempts   : 0, // Number of file uploads attempted in the last upload operation
-                                         successful : 0, // Number of files successfully uploaded in the last upload operation
-                                         errors     : 0, // Number of files returning errors in the last upload operation
-                                         count      : 0  // Total number of files uploaded successfully
-                                     }
-                    });
+                $this.data('uploadifive', {
+                    inputs: {}, // The object that contains all the file inputs
+                    inputCount: 0,  // The total number of file inputs created
+                    fileID: 0,
+                    queue: {
+                        count: 0, // Total number of files in the queue
+                        selected: 0, // Number of files selected in the last select operation
+                        replaced: 0, // Number of files replaced in the last select operation
+                        errors: 0, // Number of files that returned an error in the last select operation
+                        queued: 0, // Number of files added to the queue in the last select operation
+                        cancelled: 0  // Total number of files that have been cancelled or removed from the queue
+                    },
+                    uploads: {
+                        current: 0, // Number of files currently being uploaded
+                        attempts: 0, // Number of file uploads attempted in the last upload operation
+                        successful: 0, // Number of files successfully uploaded in the last upload operation
+                        errors: 0, // Number of files returning errors in the last upload operation
+                        count: 0  // Total number of files uploaded successfully
+                    }
+                });
                 var $data = $this.data('uploadifive');
 
                 // Set the default options
                 var settings = $data.settings = $.extend({
-                    'auto'            : true,               // Automatically upload a file when it's added to the queue
-                    'buttonClass'     : false,              // A class to add to the UploadiFive button
-                    'buttonText'      : 'Select Files',     // The text that appears on the UploadiFive button
-                    'checkScript'     : false,              // Path to the script that checks for existing file names 
-                    'dnd'             : true,               // Allow drag and drop into the queue
-                    'dropTarget'      : false,              // Selector for the drop target
-                    'fileObjName'     : 'Filedata',         // The name of the file object to use in your server-side script
-                    'fileSizeLimit'   : 0,                  // Maximum allowed size of files to upload
-                    'fileType'        : false,              // Extension of files allowed (.zip,.rar,.7z,.pdf,...ETC.), separate with a comma character ,
-                    'formData'        : {},                 // Additional data to send to the upload script
-                    'height'          : 30,                 // The height of the button
-                    'itemTemplate'    : false,              // The HTML markup for the item in the queue
-                    'method'          : 'post',             // The method to use when submitting the upload
-                    'multi'           : true,               // Set to true to allow multiple file selections
-                    'overrideEvents'  : [],                 // An array of events to override
-                    'queueID'         : false,              // The ID of the file queue
-                    'queueSizeLimit'  : 0,                  // The maximum number of files that can be in the queue
-                    'removeCompleted' : false,              // Set to true to remove files that have completed uploading
-                    'simUploadLimit'  : 0,                  // The maximum number of files to upload at once
-                    'truncateLength'  : 0,                  // The length to truncate the file names to
-                    'uploadLimit'     : 0,                  // The maximum number of files you can upload
-                    'uploadScript'    : 'uploadifive.php',  // The path to the upload script
-                    'width'           : 100                 // The width of the button
+                    'auto': true,               // Automatically upload a file when it's added to the queue
+                    'buttonClass': false,              // A class to add to the UploadiFive button
+                    'buttonText': 'Select Files',     // The text that appears on the UploadiFive button
+                    'checkScript': false,              // Path to the script that checks for existing file names 
+                    'dnd': true,               // Allow drag and drop into the queue
+                    'dropTarget': false,              // Selector for the drop target
+                    'fileObjName': 'Filedata',         // The name of the file object to use in your server-side script
+                    'fileSizeLimit': 0,                  // Maximum allowed size of files to upload
+                    'fileType': false,              // Extension of files allowed (.zip,.rar,.7z,.pdf,...ETC.), separate with a comma character ,
+                    'formData': {},                 // Additional data to send to the upload script
+                    'height': 30,                 // The height of the button
+                    'itemTemplate': false,              // The HTML markup for the item in the queue
+                    'method': 'post',             // The method to use when submitting the upload
+                    'multi': true,               // Set to true to allow multiple file selections
+                    'overrideEvents': [],                 // An array of events to override
+                    'queueID': false,              // The ID of the file queue
+                    'queueSizeLimit': 0,                  // The maximum number of files that can be in the queue
+                    'removeCompleted': false,              // Set to true to remove files that have completed uploading
+                    'simUploadLimit': 0,                  // The maximum number of files to upload at once
+                    'truncateLength': 0,                  // The length to truncate the file names to
+                    'uploadLimit': 0,                  // The maximum number of files you can upload
+                    'uploadScript': 'uploadifive.php',  // The path to the upload script
+                    'width': 100                 // The width of the button
 
                     /*
                     // Events
@@ -103,20 +103,20 @@ Released under the MIT License
 
                 // Create a template for a file input
                 $data.inputTemplate = $('<input type="file">')
-                .css({
-                    'font-size' : settings.height + 'px',
-                    'opacity'   : 0,
-                    'position'  : 'absolute',
-                    'right'     : '-3px',
-                    'top'       : '-3px',
-                    'z-index'   : 999 
-                });
+                    .css({
+                        'font-size': settings.height + 'px',
+                        'opacity': 0,
+                        'position': 'absolute',
+                        'right': '-3px',
+                        'top': '-3px',
+                        'z-index': 999
+                    });
 
                 // Create a new input
-                $data.createInput = function() {
+                $data.createInput = function () {
 
                     // Create a clone of the file input
-                    var input     = $data.inputTemplate.clone();
+                    var input = $data.inputTemplate.clone();
                     // Create a unique name for the input item
                     var inputName = input.name = 'input' + $data.inputCount++;
                     // Set the multiple attribute
@@ -128,17 +128,18 @@ Released under the MIT License
                         input.attr('accept', settings.fileType);
                     }
                     // Set the onchange event for the input
-                    input.bind('change', function() {
+                    input.bind('change', function () {
                         $data.queue.selected = 0;
                         $data.queue.replaced = 0;
-                        $data.queue.errors   = 0;
-                        $data.queue.queued   = 0;
+                        $data.queue.errors = 0;
+                        $data.queue.queued = 0;
                         // Add a queue item to the queue for each file
                         var limit = this.files.length;
                         $data.queue.selected = limit;
                         if (($data.queue.count + limit) > settings.queueSizeLimit && settings.queueSizeLimit !== 0) {
                             if ($.inArray('onError', settings.overrideEvents) < 0) {
-                                alert('The maximum number of queue items has been reached (' + settings.queueSizeLimit + ').  Please select fewer files.');
+                                //alert('The maximum number of queue items has been reached (' + settings.queueSizeLimit + ').  Please select fewer files.');
+                                alert('一次最多能上传 ' + settings.queueSizeLimit + '个文件.');
                             }
                             // Trigger the error event
                             if (typeof settings.onError === 'function') {
@@ -170,22 +171,22 @@ Released under the MIT License
                 };
 
                 // Remove an input
-                $data.destroyInput = function(key) {
+                $data.destroyInput = function (key) {
                     $($data.inputs[key]).remove();
                     delete $data.inputs[key];
                     $data.inputCount--;
                 };
 
                 // Drop a file into the queue
-                $data.drop = function(e) {
+                $data.drop = function (e) {
                     // Stop FireFox from opening the dropped file(s)
                     e.preventDefault();
                     e.stopPropagation();
 
                     $data.queue.selected = 0;
                     $data.queue.replaced = 0;
-                    $data.queue.errors   = 0;
-                    $data.queue.queued   = 0;
+                    $data.queue.errors = 0;
+                    $data.queue.queued = 0;
 
                     var fileData = e.dataTransfer;
 
@@ -196,7 +197,8 @@ Released under the MIT License
                     if (($data.queue.count + limit) > settings.queueSizeLimit && settings.queueSizeLimit !== 0) {
                         // Check if the queueSizeLimit was reached
                         if ($.inArray('onError', settings.overrideEvents) < 0) {
-                            alert('The maximum number of queue items has been reached (' + settings.queueSizeLimit + ').  Please select fewer files.');
+                            //alert('The maximum number of queue items has been reached (' + settings.queueSizeLimit + ').  Please select fewer files.');
+                            alert('一次最多能上传' + settings.queueSizeLimit + '个文件.');
                         }
                         // Trigger the onError event
                         if (typeof settings.onError === 'function') {
@@ -208,10 +210,10 @@ Released under the MIT License
                             file = fileData.files[n];
                             $data.addQueueItem(file);
                             // Check the filetype
-							if (file_types) {
-								if(file_types.indexOf(file.name.substring(file.name.lastIndexOf('.')))<0)
-									$data.error('FORBIDDEN_FILE_TYPE', file);
-							}
+                            if (file_types) {
+                                if (file_types.indexOf(file.name.substring(file.name.lastIndexOf('.'))) < 0)
+                                    $data.error('FORBIDDEN_FILE_TYPE', file);
+                            }
                         }
                         // Save the data to the inputs object
                         $data.inputs[inputName] = fileData;
@@ -229,7 +231,7 @@ Released under the MIT License
                 };
 
                 // Check if a filename exists in the queue
-                $data.fileExistsInQueue = function(file) {
+                $data.fileExistsInQueue = function (file) {
                     for (var key in $data.inputs) {
                         input = $data.inputs[key];
                         limit = input.files.length;
@@ -245,7 +247,7 @@ Released under the MIT License
                 };
 
                 // Remove an existing file in the queue
-                $data.removeExistingFile = function(file) {
+                $data.removeExistingFile = function (file) {
                     for (var key in $data.inputs) {
                         input = $data.inputs[key];
                         limit = input.files.length;
@@ -266,15 +268,15 @@ Released under the MIT License
                         '<a class="close" href="#">X</a>' +
                         '<div><span class="filename"></span><span class="fileinfo"></span></div>' +
                         '<div class="progress">' +
-                            '<div class="progress-bar"></div>' +
+                        '<div class="progress-bar"></div>' +
                         '</div>' +
-                    '</div>');
+                        '</div>');
                 } else {
                     $data.queueItem = $(settings.itemTemplate);
                 }
 
                 // Add an item to the queue
-                $data.addQueueItem = function(file) {
+                $data.addQueueItem = function (file) {
                     if ($.inArray('onAddQueueItem', settings.overrideEvents) < 0) {
                         // Check if the filename already exists in the queue
                         $data.removeExistingFile(file);
@@ -283,9 +285,9 @@ Released under the MIT License
                         // Add an ID to the queue item
                         file.queueItem.attr('id', settings.id + '-file-' + $data.fileID++);
                         // Bind the close event to the close button
-                        file.queueItem.find('.close').bind('click', function() {
-                           methods.cancel.call($this, file);
-                           return false;
+                        file.queueItem.find('.close').bind('click', function () {
+                            methods.cancel.call($this, file);
+                            return false;
                         });
                         var fileName = file.name;
                         if (fileName.length > settings.truncateLength && settings.truncateLength !== 0) {
@@ -300,10 +302,10 @@ Released under the MIT License
                     if (typeof settings.onAddQueueItem === 'function') {
                         settings.onAddQueueItem.call($this, file);
                     }
-					// Check the filetype
-					if (file_types) {
-						if(file_types.indexOf(file.name.substring(file.name.lastIndexOf('.')))<0)
-							$data.error('FORBIDDEN_FILE_TYPE', file);
+                    // Check the filetype
+                    if (file_types) {
+                        if (file_types.indexOf(file.name.substring(file.name.lastIndexOf('.'))) < 0)
+                            $data.error('FORBIDDEN_FILE_TYPE', file);
                     }
                     // Check the filesize
                     if (file.size > settings.fileSizeLimit && settings.fileSizeLimit !== 0) {
@@ -315,7 +317,7 @@ Released under the MIT License
                 };
 
                 // Remove an item from the queue
-                $data.removeQueueItem = function(file, instant, delay) {
+                $data.removeQueueItem = function (file, instant, delay) {
                     // Set the default delay
                     if (!delay) delay = 0;
                     var fadeTime = instant ? 0 : 500;
@@ -324,8 +326,8 @@ Released under the MIT License
                             file.queueItem.find('.fileinfo').html(' - Cancelled');
                         }
                         file.queueItem.find('.progress-bar').width(0);
-                        file.queueItem.delay(delay).fadeOut(fadeTime, function() {
-                           $(this).remove();
+                        file.queueItem.delay(delay).fadeOut(fadeTime, function () {
+                            $(this).remove();
                         });
                         delete file.queueItem;
                         $data.queue.count--;
@@ -333,7 +335,7 @@ Released under the MIT License
                 };
 
                 // Count the number of files that need to be uploaded
-                $data.filesToUpload = function() {
+                $data.filesToUpload = function () {
                     var filesToUpload = 0;
                     for (var key in $data.inputs) {
                         input = $data.inputs[key];
@@ -349,19 +351,20 @@ Released under the MIT License
                 };
 
                 // Check if a file exists
-                $data.checkExists = function(file) {
+                $data.checkExists = function (file) {
                     if ($.inArray('onCheck', settings.overrideEvents) < 0) {
                         // This request needs to be synchronous
                         $.ajaxSetup({
-                            'async' : false
+                            'async': false
                         });
                         // Send the filename to the check script
-                        var checkData = $.extend(settings.formData, {filename: file.name});
-                        $.post(settings.checkScript, checkData, function(fileExists) {
+                        var checkData = $.extend(settings.formData, { filename: file.name });
+                        $.post(settings.checkScript, checkData, function (fileExists) {
                             file.exists = parseInt(fileExists);
                         });
                         if (file.exists) {
-                            if (!confirm('A file named ' + file.name + ' already exists in the upload folder.\nWould you like to replace it?')) {
+                            //if (!confirm('A file named ' + file.name + ' already exists in the upload folder.\nWould you like to replace it?')) {
+                            if (!confirm('服务器上传目录已存在该文件：' + file.name + '.\n您需要替换该文件吗?')) {
                                 // If not replacing the file, cancel the upload
                                 methods.cancel.call($this, file);
                                 return true;
@@ -376,7 +379,7 @@ Released under the MIT License
                 };
 
                 // Upload a single file
-                $data.uploadFile = function(file, uploadAll) {
+                $data.uploadFile = function (file, uploadAll) {
                     if (!file.skip && !file.complete && !file.uploading) {
                         file.uploading = true;
                         $data.uploads.current++;
@@ -404,14 +407,14 @@ Released under the MIT License
                             xhr.open(settings.method, settings.uploadScript, true);
 
                             // On progress function
-                            xhr.upload.addEventListener('progress', function(e) {
+                            xhr.upload.addEventListener('progress', function (e) {
                                 if (e.lengthComputable) {
                                     $data.progress(e, file);
                                 }
                             }, false);
 
                             // On complete function
-                            xhr.addEventListener('load', function(e) {
+                            xhr.addEventListener('load', function (e) {
                                 if (this.readyState == 4) {
                                     file.uploading = false;
                                     if (this.status == 200) {
@@ -425,7 +428,8 @@ Released under the MIT License
                                     } else if (this.status == 403) {
                                         $data.error('403_FORBIDDEN', file, uploadAll);
                                     } else {
-                                        $data.error('Unknown Error', file, uploadAll);
+                                        //$data.error('Unknown Error', file, uploadAll);
+                                        $data.error('未知错误', file, uploadAll);
                                     }
                                 }
                             });
@@ -437,13 +441,13 @@ Released under the MIT License
 
                             // Send as binary
                             var reader = new FileReader();
-                            reader.onload = function(e) {
+                            reader.onload = function (e) {
 
                                 // Set some file builder variables
                                 var boundary = '-------------------------' + (new Date()).getTime(),
-                                    dashes   = '--',
-                                    eol      = '\r\n',
-                                    binFile  = '';
+                                    dashes = '--',
+                                    eol = '\r\n',
+                                    binFile = '';
 
                                 // Build an RFC2388 String 
                                 binFile += dashes + boundary + eol;
@@ -465,22 +469,22 @@ Released under the MIT License
                                 binFile += dashes + boundary + dashes + eol;
 
                                 // On progress function
-                                xhr.upload.addEventListener('progress', function(e) {
+                                xhr.upload.addEventListener('progress', function (e) {
                                     $data.progress(e, file);
                                 }, false);
 
                                 // On complete function
-                                xhr.addEventListener('load', function(e) {
+                                xhr.addEventListener('load', function (e) {
                                     file.uploading = false;
                                     var status = this.status;
                                     if (status == 404) {
                                         $data.error('404_FILE_NOT_FOUND', file, uploadAll);
                                     } else {
-                                        if (file.xhr.responseText != 'Invalid file type.') {    
+                                        if (file.xhr.responseText != 'Invalid file type.') {
                                             $data.uploadComplete(e, file, uploadAll);
                                         } else {
                                             $data.error(file.xhr.responseText, file, uploadAll);
-                                        } 
+                                        }
                                     }
                                 }, false);
 
@@ -508,7 +512,7 @@ Released under the MIT License
                 };
 
                 // Update a file upload's progress
-                $data.progress = function(e, file) {
+                $data.progress = function (e, file) {
                     var percent;
                     if ($.inArray('onProgress', settings.overrideEvents) < 0) {
                         if (e.lengthComputable) {
@@ -524,10 +528,10 @@ Released under the MIT License
                 };
 
                 // Trigger an error
-                $data.error = function(errorType, file, uploadAll) {
+                $data.error = function (errorType, file, uploadAll) {
                     if ($.inArray('onError', settings.overrideEvents) < 0) {
                         // Get the error message
-                        switch(errorType) {
+                        switch (errorType) {
                             case '404_FILE_NOT_FOUND':
                                 errorMsg = '404 Error';
                                 break;
@@ -535,20 +539,23 @@ Released under the MIT License
                                 errorMsg = '403 Forbidden';
                                 break;
                             case 'FORBIDDEN_FILE_TYPE':
-                                errorMsg = 'Forbidden File Type';
+                                //errorMsg = 'Forbidden File Type';
+                                errorMsg = '不允许的文件类型';
                                 break;
                             case 'FILE_SIZE_LIMIT_EXCEEDED':
-                                errorMsg = 'File Too Large';
+                                //errorMsg = 'File Too Large';
+                                errorMsg = '文件太大了';
                                 break;
                             default:
-                                errorMsg = 'Unknown Error';
+                                //errorMsg = 'Unknown Error';
+                                errorMsg = '未知错误';
                                 break;
                         }
 
                         // Add the error class to the queue item
                         file.queueItem.addClass('error')
-                        // Output the error in the queue item
-                        .find('.fileinfo').html(' - ' + errorMsg);
+                            // Output the error in the queue item
+                            .find('.fileinfo').html(' - ' + errorMsg);
                         // Hide the 
                         file.queueItem.find('.progress').remove();
                     }
@@ -568,7 +575,7 @@ Released under the MIT License
                 };
 
                 // Trigger when a single file upload is complete
-                $data.uploadComplete = function(e, file, uploadAll) {
+                $data.uploadComplete = function (e, file, uploadAll) {
                     if ($.inArray('onUploadComplete', settings.overrideEvents) < 0) {
                         file.queueItem.find('.progress-bar').css('width', '100%');
                         file.queueItem.find('.fileinfo').html(' - Completed');
@@ -580,7 +587,7 @@ Released under the MIT License
                         settings.onUploadComplete.call($this, file, file.xhr.responseText);
                     }
                     if (settings.removeCompleted) {
-                        setTimeout(function() { methods.cancel.call($this, file); }, 3000);
+                        setTimeout(function () { methods.cancel.call($this, file); }, 3000);
                     }
                     file.complete = true;
                     $data.uploads.successful++;
@@ -593,7 +600,7 @@ Released under the MIT License
                 };
 
                 // Trigger when all the files are done uploading
-                $data.queueComplete = function() {
+                $data.queueComplete = function () {
                     // Trigger the queueComplete event
                     if (typeof settings.onQueueComplete === 'function') {
                         settings.onQueueComplete.call($this, $data.uploads);
@@ -610,25 +617,26 @@ Released under the MIT License
                     settings.id = 'uploadifive-' + $this.attr('id');
 
                     // Wrap the file input in a div with overflow set to hidden
-                    $data.button = $('<div id="' + settings.id + '" class="uploadifive-button">' + settings.buttonText + '</div>');
+                    //$data.button = $('<div id="' + settings.id + '" class="uploadifive-button">' + settings.buttonText + '</div>');
+                    $data.button = $('<div id="' + settings.id + '" class="">' + settings.buttonText + '</div>');
                     if (settings.buttonClass) $data.button.addClass(settings.buttonClass);
 
                     // Style the button wrapper
                     $data.button.css({
-                        'height'      : settings.height,
-                        'line-height' : settings.height + 'px', 
-                        'overflow'    : 'hidden',
-                        'position'    : 'relative',
-                        'text-align'  : 'center', 
-                        'width'       : settings.width
+                        //'height'      : settings.height,
+                        //'line-height' : settings.height + 'px', 
+                        'overflow': 'hidden',
+                        'position': 'relative',
+                        'text-align': 'center',
+                        'width': settings.width
                     });
 
                     // Insert the button above the file input
                     $this.before($data.button)
-                    // Add the file input to the button
-                    .appendTo($data.button)
-                    // Modify the styles of the file input
-                    .hide();
+                        // Add the file input to the button
+                        .appendTo($data.button)
+                        // Modify the styles of the file input
+                        .hide();
 
                     // Create a new input
                     $data.createInput.call($this);
@@ -645,17 +653,17 @@ Released under the MIT License
                     // Add drag and drop functionality
                     if (settings.dnd) {
                         var $dropTarget = settings.dropTarget ? $(settings.dropTarget) : $data.queueEl.get(0);
-                        $dropTarget.addEventListener('dragleave', function(e) {
+                        $dropTarget.addEventListener('dragleave', function (e) {
                             // Stop FireFox from opening the dropped file(s)
                             e.preventDefault();
                             e.stopPropagation();
                         }, false);
-                        $dropTarget.addEventListener('dragenter', function(e) {
+                        $dropTarget.addEventListener('dragenter', function (e) {
                             // Stop FireFox from opening the dropped file(s)
                             e.preventDefault();
                             e.stopPropagation();
                         }, false);
-                        $dropTarget.addEventListener('dragover', function(e) {
+                        $dropTarget.addEventListener('dragover', function (e) {
                             // Stop FireFox from opening the dropped file(s)
                             e.preventDefault();
                             e.stopPropagation();
@@ -665,7 +673,7 @@ Released under the MIT License
 
                     // Send as binary workaround for Chrome
                     if (!XMLHttpRequest.prototype.sendAsBinary) {
-                        XMLHttpRequest.prototype.sendAsBinary = function(datastr) {
+                        XMLHttpRequest.prototype.sendAsBinary = function (datastr) {
                             function byteValue(x) {
                                 return x.charCodeAt(0) & 0xff;
                             }
@@ -696,9 +704,9 @@ Released under the MIT License
 
 
         // Write some data to the console
-        debug : function() {
+        debug: function () {
 
-            return this.each(function() {
+            return this.each(function () {
 
                 console.log($(this).data('uploadifive'));
 
@@ -707,12 +715,12 @@ Released under the MIT License
         },
 
         // Clear all the items from the queue
-        clearQueue : function() {
+        clearQueue: function () {
 
-            this.each(function() {
+            this.each(function () {
 
-                var $this    = $(this),
-                    $data    = $this.data('uploadifive'),
+                var $this = $(this),
+                    $data = $this.data('uploadifive'),
                     settings = $data.settings;
 
                 for (var key in $data.inputs) {
@@ -733,12 +741,12 @@ Released under the MIT License
         },
 
         // Cancel a file upload in progress or remove a file from the queue
-        cancel : function(file, fast) {
+        cancel: function (file, fast) {
 
-            this.each(function() {
+            this.each(function () {
 
-                var $this    = $(this),
-                    $data    = $this.data('uploadifive'),
+                var $this = $(this),
+                    $data = $this.data('uploadifive'),
                     settings = $data.settings;
 
                 // If user passed a queue item ID instead of file...
@@ -766,18 +774,18 @@ Released under the MIT License
                 if (typeof settings.onCancel === 'function') {
                     settings.onCancel.call($this, file);
                 }
-                
+
             });
-            
+
         },
 
         // Upload the files in the queue
-        upload : function(file, keepVars) {
+        upload: function (file, keepVars) {
 
-            this.each(function() {
+            this.each(function () {
 
-                var $this    = $(this),
-                    $data    = $this.data('uploadifive'),
+                var $this = $(this),
+                    $data = $this.data('uploadifive'),
                     settings = $data.settings;
 
                 if (file) {
@@ -789,9 +797,9 @@ Released under the MIT License
                     // Check if the upload limit was reached
                     if (($data.uploads.count + $data.uploads.current) < settings.uploadLimit || settings.uploadLimit === 0) {
                         if (!keepVars) {
-                            $data.uploads.attempted   = 0;
+                            $data.uploads.attempted = 0;
                             $data.uploads.successsful = 0;
-                            $data.uploads.errors      = 0;
+                            $data.uploads.errors = 0;
                             var filesToUpload = $data.filesToUpload();
                             // Trigger the onUpload event
                             if (typeof settings.onUpload === 'function') {
@@ -800,7 +808,7 @@ Released under the MIT License
                         }
 
                         // Loop through the files
-                        $('#' + settings.queueID).find('.uploadifive-queue-item').not('.error, .complete').each(function() {
+                        $('#' + settings.queueID).find('.uploadifive-queue-item').not('.error, .complete').each(function () {
                             _file = $(this).data('file');
                             // Check if the simUpload limit was reached
                             if (($data.uploads.current >= settings.simUploadLimit && settings.simUploadLimit !== 0) || ($data.uploads.current >= settings.uploadLimit && settings.uploadLimit !== 0) || ($data.uploads.count >= settings.uploadLimit && settings.uploadLimit !== 0)) {
@@ -825,12 +833,13 @@ Released under the MIT License
                         if ($data.uploads.current === 0) {
                             if ($.inArray('onError', settings.overrideEvents) < 0) {
                                 if ($data.filesToUpload() > 0 && settings.uploadLimit !== 0) {
-                                    alert('The maximum upload limit has been reached.');
+                                    //alert('The maximum upload limit has been reached.');
+                                    alert('达到最大上传数量限制.');
+                                    // Trigger the onError event
+                                    if (typeof settings.onError === 'function') {
+                                        settings.onError.call($this, 'UPLOAD_LIMIT_EXCEEDED', $data.filesToUpload());
+                                    }
                                 }
-                            }
-                            // Trigger the onError event
-                            if (typeof settings.onError === 'function') {
-                                settings.onError.call($this, 'UPLOAD_LIMIT_EXCEEDED', $data.filesToUpload());
                             }
                         }
                     }
@@ -842,14 +851,14 @@ Released under the MIT License
         },
 
         // Destroy an instance of UploadiFive
-        destroy : function() {
+        destroy: function () {
 
-            this.each(function() {
+            this.each(function () {
 
-                var $this    = $(this),
-                    $data    = $this.data('uploadifive'),
+                var $this = $(this),
+                    $data = $this.data('uploadifive'),
                     settings = $data.settings;
-            
+
                 // Clear the queue
                 methods.clearQueue.call($this);
                 // Destroy the queue if it was created
@@ -858,8 +867,8 @@ Released under the MIT License
                 $this.siblings('input').remove();
                 // Show the original file input
                 $this.show()
-                // Move the file input out of the button
-                .insertBefore($data.button);
+                    // Move the file input out of the button
+                    .insertBefore($data.button);
                 // Delete the button
                 $data.button.remove();
                 // Trigger the destroy event
@@ -873,7 +882,7 @@ Released under the MIT License
 
     };
 
-    $.fn.uploadifive = function(method) {
+    $.fn.uploadifive = function (method) {
 
         if (methods[method]) {
             return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
